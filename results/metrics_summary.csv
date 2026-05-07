@@ -1,0 +1,29 @@
+Metric,Value
+-----PERFORMANCE METRICS-----
+Accuracy,97.18%
+Recall,84.46%
+Precision,4.97%
+F1 Score,9.39%
+ROC AUC,0.9356
+
+-----PROCESSING TIME-----
+Total Time,151.89 ms
+Avg Per Transaction,0.0018 ms
+Total Transactions,85443
+
+-----CONFUSION MATRIX-----
+True Positives,125
+False Positives,2390
+True Negatives,82905
+False Negatives,23
+
+-----FRAUD DETECTION-----
+Total Frauds,148
+Frauds Caught,125
+Frauds Missed,23
+Catch Rate,84.46%
+
+-----LAYER 1 DISTRIBUTION-----
+PASS,80437 (94.14%)
+BLOCK,2504 (2.93%)
+FLAG,2502 (2.93%)
