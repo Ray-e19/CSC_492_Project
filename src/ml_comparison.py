@@ -327,8 +327,8 @@ class FraudDetectionComparison:
         
         print("="*100)
     
+    # Prints detailed results of algorithm
     def print_detailed_results(self):
-            # Prints detailed results of algorithm
     
             sorted_results = sorted(self.results, key=lambda x: x.recall, reverse=True)
     
@@ -364,7 +364,7 @@ class FraudDetectionComparison:
                 print(f"    Per transaction: {result.avg_time_per_tx_ms:.4f} ms")
 
 if __name__ == "__main__":
-    # Load and split the dataset (comparison needs train/test split for fair eval)
+    # Load and split the dataset
     loader = DataLoader('data/creditcardfraud/creditcard.csv')
     X_train, X_test, y_train, y_test = loader.load_and_split()
 
