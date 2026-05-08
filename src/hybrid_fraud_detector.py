@@ -40,9 +40,9 @@ class HybridFraudDetector:
             v_features.append(f'V{i}')       
         
         means = []
-        stds  = []
-        p01s  = []
-        p99s  = []
+        stds = []
+        p01s = []
+        p99s = []
         for f in v_features:
             means.append(self.stat_thresholds[f'{f}_mean'])
             stds.append(self.stat_thresholds[f'{f}_std'])
@@ -50,11 +50,11 @@ class HybridFraudDetector:
             p99s.append(self.stat_thresholds[f'{f}_p99'])
 
         self.means = np.array(means)
-        self.stds  = np.array(stds)
-        self.p01s  = np.array(p01s)
-        self.p99s  = np.array(p99s)
+        self.stds = np.array(stds)
+        self.p01s = np.array(p01s)
+        self.p99s = np.array(p99s)
 
-        self.amount_max  = self.stat_thresholds['amount_max']
+        self.amount_max = self.stat_thresholds['amount_max']
         self.amount_99th = self.stat_thresholds['amount_99th']
 
     # Predicts each transaction and conducts classification
@@ -278,7 +278,7 @@ class HybridFraudDetector:
  
         # Calculates all the metrics
         accuracy  = accuracy_score(y_true, predictions) * 100
-        recall    = recall_score(y_true, predictions) * 100
+        recall = recall_score(y_true, predictions) * 100
         precision = precision_score(y_true, predictions, zero_division=0) * 100
         f1 = f1_score(y_true, predictions, zero_division=0) * 100
         avg_ms = processing_time_ms / len(X)
@@ -305,17 +305,17 @@ class HybridFraudDetector:
         # Create the metrics summary csv
         metrics_rows = [
             ['-----PERFORMANCE METRICS-----', ''],
-            ['Accuracy',     f'{accuracy:.2f}%'],
-            ['Recall',       f'{recall:.2f}%'],
-            ['Precision',    f'{precision:.2f}%'],
-            ['F1 Score',     f'{f1:.2f}%'],
-            ['ROC AUC',      f'{roc_auc:.4f}'],
+            ['Accuracy', f'{accuracy:.2f}%'],
+            ['Recall', f'{recall:.2f}%'],
+            ['Precision', f'{precision:.2f}%'],
+            ['F1 Score', f'{f1:.2f}%'],
+            ['ROC AUC', f'{roc_auc:.4f}'],
  
             ['', ''],
             ['-----PROCESSING TIME-----', ''],
-            ['Total Time',              f'{processing_time_ms:.2f} ms'],
-            ['Avg Per Transaction',     f'{avg_ms:.4f} ms'],
-            ['Total Transactions',      f'{len(X)}'],
+            ['Total Time', f'{processing_time_ms:.2f}ms'],
+            ['Avg Per Transaction', f'{avg_ms:.4f}ms'],
+            ['Total Transactions', f'{len(X)}'],
  
             ['', ''],
             ['-----CONFUSION MATRIX-----', ''],
@@ -326,10 +326,10 @@ class HybridFraudDetector:
  
             ['', ''],
             ['-----FRAUD DETECTION-----', ''],
-            ['Total Frauds',     f'{total_frauds}'],
-            ['Frauds Caught',    f'{tp}'],
-            ['Frauds Missed',    f'{fn_count}'],
-            ['Catch Rate',       f'{tp / total_frauds * 100:.2f}%'],
+            ['Total Frauds', f'{total_frauds}'],
+            ['Frauds Caught', f'{tp}'],
+            ['Frauds Missed', f'{fn_count}'],
+            ['Catch Rate', f'{tp / total_frauds * 100:.2f}%'],
  
             ['', ''],
             ['-----LAYER 1 DISTRIBUTION-----', ''],
@@ -340,7 +340,6 @@ class HybridFraudDetector:
             metrics_rows.append([f'{label}', f'{count} ({pct:.2f}%)'])
  
         with open(output_path / 'metrics_summary.csv', 'w') as f:
-            f.write('Metric,Value\n')
             for row in metrics_rows:
                 if row == ['', '']:
                     f.write('\n')
