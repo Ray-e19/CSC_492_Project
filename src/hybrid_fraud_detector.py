@@ -35,12 +35,25 @@ class HybridFraudDetector:
 
     def setup_threshold_arrays(self):
         # Retrieves the stats for V1-V28 and stores them as numpy arrays
-        v_features = [f'V{i}' for i in range(1, 29)]
+        v_features = []
+        for i in range(1, 29):
+            v_features.append(f'V{i}')       
+        
+        means = []
+        stds  = []
+        p01s  = []
+        p99s  = []
 
-        self.means = np.array([self.stat_thresholds[f'{f}_mean'] for f in v_features])
-        self.stds = np.array([self.stat_thresholds[f'{f}_std']  for f in v_features])
-        self.p01s = np.array([self.stat_thresholds[f'{f}_p01']  for f in v_features])
-        self.p99s = np.array([self.stat_thresholds[f'{f}_p99']  for f in v_features])
+        for f in v_features:
+            means.append(self.stat_thresholds[f'{f}_mean'])
+            stds.append(self.stat_thresholds[f'{f}_std'])
+            p01s.append(self.stat_thresholds[f'{f}_p01'])
+            p99s.append(self.stat_thresholds[f'{f}_p99'])
+
+        self.means = np.array(means)
+        self.stds  = np.array(stds)
+        self.p01s  = np.array(p01s)
+        self.p99s  = np.array(p99s)
 
         self.amount_max  = self.stat_thresholds['amount_max']
         self.amount_99th = self.stat_thresholds['amount_99th']
@@ -118,8 +131,12 @@ class HybridFraudDetector:
         fp_transactions = X.iloc[false_postive_idx].copy()
         fp_transactions['True_Label'] = 0
         fp_transactions['Predicted_Label'] = 1
-        fp_transactions['Layer1_Classification'] = [classifications[i] for i in false_postive_idx]
-
+        
+        layer1_labels = []
+        for i in false_postive_idx:
+            layer1_labels.append(classifications[i])
+        fp_transactions['Layer1_Classification'] = layer1_labels
+        
         # Get the ML probability for each false positive
         # Blocked transactions dont have a real probability so we just set it to 1.0
         ml_probability = []
@@ -172,8 +189,12 @@ class HybridFraudDetector:
         fn_transactions = X.iloc[false_negative_idx].copy()
         fn_transactions['True_Label'] = 1
         fn_transactions['Predicted_Label'] = 0
-        fn_transactions['Layer1_Classification'] = [classifications[i] for i in false_negative_idx]
-
+        
+        layer1_labels = []
+        for i in false_negative_idx:
+            layer1_labels.append(classifications[i])
+        fn_transactions['Layer1_Classification'] = layer1_labels
+        
         # Get the ML probability for each missed fraud
         ml_probability = []
         for idx in false_negative_idx:
@@ -184,7 +205,10 @@ class HybridFraudDetector:
         # Figure out which threshold was applied
         thresholds = []
         for idx in false_negative_idx:
-            thresholds.append(0.20 if classifications[idx] == 'FLAG' else 0.40)
+            if classifications[idx] == 'FLAG':
+                thresholds.append(0.20)
+            else:
+                thresholds.append(0.40)
         fn_transactions['Threshold_Used'] = thresholds
 
         # Determine the reason for each false negative
@@ -197,7 +221,11 @@ class HybridFraudDetector:
         fn_transactions['Reason'] = reasons
 
         # Distance from threshold to show how close to catching it
-        fn_transactions['Distance_From_Threshold'] = [t - p for p, t in zip(ml_probability, thresholds)]
+        distance_from_threshold = []
+        for probability, threshold in zip(ml_probability, thresholds):
+            distance_from_threshold.append(threshold - probability)
+
+        fn_transactions['Distance_From_Threshold'] = distance_from_threshold
 
         return fn_transactions
 
@@ -319,8 +347,8 @@ class HybridFraudDetector:
             fp_rows = fp[['Amount', 'Layer1_Classification', 'ML_Probability',
                           'Threshold_Used', 'Reason']].copy()
             fp_rows['Distance_From_Threshold'] = None
-            fp_rows['Error_Type']              = 'False Positive'
-            fp_rows['Transaction_Number']      = fp.index
+            fp_rows['Error_Type'] = 'False Positive'
+            fp_rows['Transaction_Number'] = fp.index
         else:
             fp_rows = pd.DataFrame(columns=['Amount', 'Layer1_Classification',
                                             'ML_Probability', 'Threshold_Used', 'Reason',

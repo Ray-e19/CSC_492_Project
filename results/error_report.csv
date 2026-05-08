@@ -201,7 +201,7 @@ Transaction_Number,Error_Type,Amount,Layer1_Classification,ML_Probability,Thresh
 96130,False Positive,64.96,BLOCK,1.0,N/A (BLOCK),,extreme z-score in V8: 9.31 > 6
 176820,False Positive,0.77,BLOCK,1.0,N/A (BLOCK),,extreme z-score in V27: 7.04 > 6
 194187,False Positive,1.0,BLOCK,1.0,N/A (BLOCK),,extreme z-score in V20: 9.28 > 6
-197403,False Positive,0.76,PASS,0.4075048287067162,0.4,,ML probability 0.4075 >= threshold 0.4
+197403,False Positive,0.76,PASS,0.40750482870671617,0.4,,ML probability 0.4075 >= threshold 0.4
 38193,False Positive,305.0,BLOCK,1.0,N/A (BLOCK),,extreme z-score in V20: 6.95 > 6
 142233,False Positive,0.92,BLOCK,1.0,N/A (BLOCK),,extreme z-score in V10: 6.65 > 6
 122250,False Positive,0.89,BLOCK,1.0,N/A (BLOCK),,extreme z-score in V10: 7.31 > 6
@@ -1419,7 +1419,7 @@ Transaction_Number,Error_Type,Amount,Layer1_Classification,ML_Probability,Thresh
 282881,False Positive,3.82,BLOCK,1.0,N/A (BLOCK),,extreme z-score in V1: 8.09 > 6
 181965,False Positive,2029.79,BLOCK,1.0,N/A (BLOCK),,too many extreme features: 5 >= 5
 186049,False Positive,6.99,BLOCK,1.0,N/A (BLOCK),,too many extreme features: 6 >= 5
-207187,False Positive,1.0,FLAG,0.23913889650797443,0.2,,ML probability 0.2391 >= threshold 0.2
+207187,False Positive,1.0,FLAG,0.23913889650797449,0.2,,ML probability 0.2391 >= threshold 0.2
 251643,False Positive,1105.99,BLOCK,1.0,N/A (BLOCK),,too many extreme features: 5 >= 5
 118658,False Positive,9.99,BLOCK,1.0,N/A (BLOCK),,extreme z-score in V1: 6.50 > 6
 263367,False Positive,1.46,BLOCK,1.0,N/A (BLOCK),,too many extreme features: 9 >= 5
@@ -1740,7 +1740,7 @@ Transaction_Number,Error_Type,Amount,Layer1_Classification,ML_Probability,Thresh
 269532,False Positive,8.99,BLOCK,1.0,N/A (BLOCK),,extreme z-score in V8: 13.29 > 6
 43548,False Positive,99.99,BLOCK,1.0,N/A (BLOCK),,too many extreme features: 9 >= 5
 11374,False Positive,89.99,BLOCK,1.0,N/A (BLOCK),,extreme z-score in V17: 6.19 > 6
-268715,False Positive,3.78,FLAG,0.2879662650677927,0.2,,ML probability 0.2880 >= threshold 0.2
+268715,False Positive,3.78,FLAG,0.28796626506779266,0.2,,ML probability 0.2880 >= threshold 0.2
 7578,False Positive,760.66,BLOCK,1.0,N/A (BLOCK),,extreme z-score in V8: 9.08 > 6
 131967,False Positive,0.89,BLOCK,1.0,N/A (BLOCK),,extreme z-score in V10: 11.56 > 6
 281731,False Positive,0.0,BLOCK,1.0,N/A (BLOCK),,too many extreme features: 8 >= 5
@@ -2397,7 +2397,7 @@ Transaction_Number,Error_Type,Amount,Layer1_Classification,ML_Probability,Thresh
 157918,False Negative / Missed Fraud,635.1,PASS,0.019940690120726537,0.4,0.3800593098792735,ML probability 0.0199 < threshold 0.4 (missed by 0.3801)
 219025,False Negative / Missed Fraud,4.49,PASS,0.0,0.4,0.4,ML probability 0.0000 < threshold 0.4 (missed by 0.4000)
 68067,False Negative / Missed Fraud,519.9,PASS,0.0,0.4,0.4,ML probability 0.0000 < threshold 0.4 (missed by 0.4000)
-10497,False Negative / Missed Fraud,3.79,PASS,0.12959261637203257,0.4,0.27040738362796746,ML probability 0.1296 < threshold 0.4 (missed by 0.2704)
+10497,False Negative / Missed Fraud,3.79,PASS,0.1295926163720326,0.4,0.27040738362796746,ML probability 0.1296 < threshold 0.4 (missed by 0.2704)
 222419,False Negative / Missed Fraud,0.0,PASS,0.009915413261950827,0.4,0.3900845867380492,ML probability 0.0099 < threshold 0.4 (missed by 0.3901)
 192687,False Negative / Missed Fraud,276.17,PASS,0.03925711824310504,0.4,0.360742881756895,ML probability 0.0393 < threshold 0.4 (missed by 0.3607)
 72757,False Negative / Missed Fraud,1.79,PASS,0.0,0.4,0.4,ML probability 0.0000 < threshold 0.4 (missed by 0.4000)
