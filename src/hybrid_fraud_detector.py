@@ -43,7 +43,6 @@ class HybridFraudDetector:
         stds  = []
         p01s  = []
         p99s  = []
-
         for f in v_features:
             means.append(self.stat_thresholds[f'{f}_mean'])
             stds.append(self.stat_thresholds[f'{f}_std'])
@@ -63,8 +62,9 @@ class HybridFraudDetector:
         num_transactions = len(X)
 
         # Grabs the V features and amounts as numpy arrays
-        # .values converts from pandas to numpy so we can do fast math on it
-        v_features = [f'V{i}' for i in range(1, 29)]
+        v_features = []
+        for i in range(1, 29):
+            v_features.append(f'V{i}')
         X_v = X[v_features].values
         amounts = X['Amount'].values
 
@@ -108,7 +108,13 @@ class HybridFraudDetector:
             # Flagged transactions get a lower threshold (0.20) because they are already suspicious
             # Passed transactions get the normal threshold (0.40)S
             is_flag = is_flag[ml_idx]
-            thresholds = np.where(is_flag, self.THRESHOLD_FLAG, self.THRESHOLD_PASS)
+            thresholds = []
+            for flag in is_flag:
+                if flag:
+                    thresholds.append(self.THRESHOLD_FLAG)
+                else:
+                    thresholds.append(self.THRESHOLD_PASS)
+            thresholds = np.array(thresholds)
 
             # Compare probabilities against contextual thresholds
             ml_predictions = (fraud_probs >= thresholds).astype(int)
@@ -138,7 +144,7 @@ class HybridFraudDetector:
         fp_transactions['Layer1_Classification'] = layer1_labels
         
         # Get the ML probability for each false positive
-        # Blocked transactions dont have a real probability so we just set it to 1.0
+        # Blocked transactions dont have a real probability so set it to 1.0
         ml_probability = []
         for idx in false_postive_idx:
             if classifications[idx] == 'BLOCK':
@@ -237,7 +243,9 @@ class HybridFraudDetector:
                     f"${self.AMOUNT_MULTIPLIER * self.amount_max:.2f}")
 
         # Checks if a z-score was the problem
-        v_features = [f'V{i}' for i in range(1, 29)]
+        v_features = []
+        for i in range(1, 29):
+            v_features.append(f'V{i}')
         values = transaction[v_features].values
         z_scores = np.abs((values - self.means) / self.stds)
 
@@ -377,7 +385,7 @@ class HybridFraudDetector:
 
 if __name__ == "__main__":
     # Load and split data into 70% training and 30% testing
-    loader = DataLoader('data/creditcardfraud/creditcard.csv')
+    loader = DataLoader('data/creditcard.csv')
     X_train, X_test, y_train, y_test = loader.load_and_split()
 
     # Load the trained models

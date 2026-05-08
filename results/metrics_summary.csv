@@ -7,8 +7,8 @@ F1 Score,9.39%
 ROC AUC,0.9356
 
 -----PROCESSING TIME-----
-Total Time,198.10 ms
-Avg Per Transaction,0.0023 ms
+Total Time,184.77 ms
+Avg Per Transaction,0.0022 ms
 Total Transactions,85443
 
 -----CONFUSION MATRIX-----

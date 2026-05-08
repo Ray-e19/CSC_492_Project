@@ -12,7 +12,6 @@ from sklearn.metrics import (
     f1_score, confusion_matrix, roc_auc_score
 )
 
-
 @dataclass
 class AlgorithmResult:
    # Stores metrics/results of different algorithms
@@ -226,24 +225,33 @@ class FraudDetectionComparison:
         predictions, classifications = hybrid_detector.predict(self.X_test)
         predict_time = (time.perf_counter() - predict_start) * 1000
         
-        # Hybrid doesn't have true probabilities, use predictions as proxy
+        # Blocked transactions get probability 1.0 since layer 1 already caught them
         try:
-            # Try to get RF probabilities for ROC AUC
-            ml_idx = [i for i, c in enumerate(classifications) if c != 'BLOCK']
+            # Get RF probabilities for ROC AUC
+            ml_idx = []
+            for i, c in enumerate(classifications):
+                if c != 'BLOCK':
+                    ml_idx.append(i)
             if ml_idx:
                 X_ml = self.X_test.iloc[ml_idx]
                 ml_probs = hybrid_detector.rf_model.predict_proba(X_ml)[:, 1]
                 
                 # Create full probability array
                 probs = np.zeros(len(self.X_test))
-                probs[[i for i, c in enumerate(classifications) if c == 'BLOCK']] = 1.0
+
+                block_idx = []
+                for i, c in enumerate(classifications):
+                    if c == 'BLOCK':
+                        block_idx.append(i)
+                probs[block_idx] = 1.0
+
                 for idx, prob in zip(ml_idx, ml_probs):
                     probs[idx] = prob
-                
+
                 roc_auc = roc_auc_score(self.y_test, probs)
             else:
                 roc_auc = 0.0
-        except:
+        except Exception:
             roc_auc = 0.0
         
         result = self.calculate_metrics(
@@ -307,65 +315,59 @@ class FraudDetectionComparison:
     def print_summary(self):
         # Prints a summary table of the results
         print("\n" + "="*100)
-        print("COMPARISON TABLE (sorted by recall)")
+        print("COMPARISON TABLE")
         print("="*100)
         print(f"{'Algorithm':<25} {'Accuracy':>10} {'Recall':>10} {'Precision':>10} {'F1':>10} {'ROC AUC':>10} {'Speed(ms)':>12}")
         print("-"*100)
         
-        # Sort by recall
-        sorted_results = sorted(self.results, key=lambda x: x.recall, reverse=True)
-        
-        for result in sorted_results:
+        for result in self.results:
             roc_str = f"{result.roc_auc:.4f}" if result.roc_auc > 0 else "N/A"
             print(f"{result.name:<25} "
-                  f"{result.accuracy*100:>9.2f}% "
-                  f"{result.recall*100:>9.2f}% "
-                  f"{result.precision*100:>9.2f}% "
-                  f"{result.f1_score*100:>9.2f}% "
-                  f"{roc_str:>10} "
-                  f"{result.avg_time_per_tx_ms:>11.4f}")
+                f"{result.accuracy*100:>9.2f}% "
+                f"{result.recall*100:>9.2f}% "
+                f"{result.precision*100:>9.2f}% "
+                f"{result.f1_score*100:>9.2f}% "
+                f"{roc_str:>10} "
+                f"{result.avg_time_per_tx_ms:>11.4f}")
         
         print("="*100)
     
     # Prints detailed results of algorithm
-    def print_detailed_results(self):
-    
-            sorted_results = sorted(self.results, key=lambda x: x.recall, reverse=True)
-    
+    def print_detailed_results(self):    
             print("\n" + "="*70)
             print("DETAILED RESULTS")
             print("="*70)
     
-            for result in sorted_results:
+            for result in self.results:
                 print(f"\n{result.name}:")
     
-                print(f"  Performance:")
-                print(f"    Accuracy:  {result.accuracy*100:.2f}%")
-                print(f"    Recall:    {result.recall*100:.2f}%")
-                print(f"    Precision: {result.precision*100:.2f}%")
-                print(f"    F1 Score:  {result.f1_score*100:.2f}%")
+                print(f"-----Performance-----")
+                print(f"Accuracy: {result.accuracy*100:.2f}%")
+                print(f"Recall: {result.recall*100:.2f}%")
+                print(f"Precision: {result.precision*100:.2f}%")
+                print(f"F1 Score: {result.f1_score*100:.2f}%")
                 if result.roc_auc > 0:
-                    print(f"    ROC AUC:   {result.roc_auc:.4f}")
+                    print(f"ROC AUC: {result.roc_auc:.4f}")
     
-                print(f"  Fraud Detection:")
-                print(f"    Caught: {result.frauds_caught}/{result.total_frauds} ({result.recall*100:.2f}%)")
-                print(f"    Missed: {result.frauds_missed}/{result.total_frauds}")
+                print(f"-----Fraud Detection-----")
+                print(f"Caught: {result.frauds_caught}/{result.total_frauds} ({result.recall*100:.2f}%)")
+                print(f"Missed: {result.frauds_missed}/{result.total_frauds}")
     
-                print(f"  Confusion Matrix:")
-                print(f"    True Positives:  {result.true_positives:,}")
-                print(f"    False Positives: {result.false_positives:,}")
-                print(f"    True Negatives:  {result.true_negatives:,}")
-                print(f"    False Negatives: {result.false_negatives:,}")
+                print(f"-----Confusion Matrix-----")
+                print(f"True Positives: {result.true_positives:,}")
+                print(f"False Positives: {result.false_positives:,}")
+                print(f"True Negatives: {result.true_negatives:,}")
+                print(f"False Negatives: {result.false_negatives:,}")
     
-                print(f"  Timing:")
+                print(f"-----Processing Time-----")
                 if result.train_time_ms > 0:
-                    print(f"    Training:        {result.train_time_ms/1000:.2f} seconds")
-                print(f"    Prediction:      {result.predict_time_ms:.2f} ms total")
-                print(f"    Per transaction: {result.avg_time_per_tx_ms:.4f} ms")
+                    print(f"Training: {result.train_time_ms/1000:.2f} seconds")
+                    print(f"Prediction: {result.predict_time_ms:.2f} ms total")
+                    print(f"Per transaction: {result.avg_time_per_tx_ms:.4f} ms")
 
 if __name__ == "__main__":
     # Load and split the dataset
-    loader = DataLoader('data/creditcardfraud/creditcard.csv')
+    loader = DataLoader('data/creditcard.csv')
     X_train, X_test, y_train, y_test = loader.load_and_split()
 
     # Load the trained hybrid detector

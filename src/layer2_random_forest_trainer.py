@@ -14,7 +14,7 @@ class RandomForestTrainer:
         
     # Build a forest of trees from the training set and returns a model
     def fit(self, X_train, y_train):
-        print(f"Training Random Forest with {X_train.shape[0]} transactions...")
+        print(f"Training Random Forest with {X_train.shape[0]} transactions")
         
         # Trains Random Forest
         self.model.fit(X_train, y_train)
@@ -30,7 +30,7 @@ class RandomForestTrainer:
 
 if __name__ == "__main__":
     # Load and split data
-    loader = DataLoader('data/creditcardfraud/creditcard.csv')
+    loader = DataLoader('data/creditcard.csv')
     X_train, X_test, y_train, y_test = loader.load_and_split()
     
     # Train Layer 2 and produce model

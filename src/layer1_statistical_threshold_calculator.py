@@ -10,7 +10,7 @@ class StatisticalThresholdCalculator:
         # Filters only legitimate transactions 
         legit_transactions = X_train[y_train == 0]
         
-        print(f"Analyzing {len(legit_transactions)} legitimate transactions...")
+        print(f"Analyzing {len(legit_transactions)} legitimate transactions")
         
         # Amount thresholds
         self.thresholds['amount_max'] = legit_transactions['Amount'].max()
@@ -18,7 +18,10 @@ class StatisticalThresholdCalculator:
         
         # Finds mean, standard deviation, first percentile, and 99th percentile
         # from features V1-V28
-        v_features = [col for col in X_train.columns if col.startswith('V')]
+        v_features = []
+        for col in X_train.columns:
+            if col.startswith('V'):
+                v_features.append(col)
         
         for feature in v_features:
             self.thresholds[f'{feature}_mean'] = legit_transactions[feature].mean()
@@ -40,7 +43,7 @@ class StatisticalThresholdCalculator:
 
 if __name__ == "__main__":
     # Load and split data
-    loader = DataLoader('data/creditcardfraud/creditcard.csv')
+    loader = DataLoader('data/creditcard.csv')
     X_train, X_test, y_train, y_test = loader.load_and_split()
     
     # Train Layer 1 and produce model
