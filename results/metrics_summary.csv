@@ -1,4 +1,3 @@
-Metric,Value
 -----PERFORMANCE METRICS-----
 Accuracy,97.18%
 Recall,84.46%
@@ -7,8 +6,8 @@ F1 Score,9.39%
 ROC AUC,0.9356
 
 -----PROCESSING TIME-----
-Total Time,184.77 ms
-Avg Per Transaction,0.0022 ms
+Total Time,172.45ms
+Avg Per Transaction,0.0020ms
 Total Transactions,85443
 
 -----CONFUSION MATRIX-----
